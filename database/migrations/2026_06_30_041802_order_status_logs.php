@@ -10,14 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('order_status_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('sku')->nullable()->unique();
-            $table->string('name');
-            $table->string('platform_product_id')->nullable();
-            $table->string('image')->nullable();
-            $table->text('packing_notes')->nullable();
-            $table->boolean('is_fragile')->default(false);
+
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete();
+
+            $table->string('from_status')->nullable();
+            $table->string('to_status');
+
+            $table->text('note')->nullable();
+
             $table->timestamps();
         });
     }
