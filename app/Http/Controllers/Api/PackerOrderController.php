@@ -13,7 +13,7 @@ class PackerOrderController extends Controller
     {
         return Order::with(['items.product'])
             ->whereIn('status', ['pending', 'packing', 'issue'])
-            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'normal', 'low')")
+            ->orderByRaw("CASE priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 WHEN 'low' THEN 4 ELSE 5 END")
             ->orderBy('pickup_deadline')
             ->paginate(20);
     }
@@ -128,6 +128,29 @@ class PackerOrderController extends Controller
         ]);
 
         $order->logStatus($fromStatus, 'packed', optional($request->user())->id, 'Packing completed');
+
+        return $order->load(['items.product', 'photos']);
+    }
+
+    public function flagIssue(Request $request, Order $order)
+    {
+        if ($order->status !== 'packing') {
+            return response()->json([
+                'message' => 'Only orders currently being packed can be flagged with an issue.',
+            ], 422);
+        }
+
+        $data = $request->validate([
+            'reason' => ['required', 'string', 'min:5'],
+        ]);
+
+        $fromStatus = $order->status;
+
+        $order->update([
+            'status' => 'issue',
+        ]);
+
+        $order->logStatus($fromStatus, 'issue', optional($request->user())->id, $data['reason']);
 
         return $order->load(['items.product', 'photos']);
     }

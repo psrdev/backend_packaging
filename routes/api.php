@@ -28,5 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/packer/order-items/{item}/confirm', [PackerOrderController::class, 'confirmItem']);
         Route::post('/packer/orders/{order}/photos', [PackerOrderController::class, 'uploadPhoto']);
         Route::post('/packer/orders/{order}/complete', [PackerOrderController::class, 'complete']);
+        Route::post('/packer/orders/{order}/issue', [PackerOrderController::class, 'flagIssue']);
     });
 });

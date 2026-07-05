@@ -32,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('PackVeri Admin')
+            ->brandName('Awadh Crafts')
             ->colors([
                 'primary' => Color::Indigo,
                 'danger'  => Color::Rose,
