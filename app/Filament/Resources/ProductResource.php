@@ -90,7 +90,8 @@ class ProductResource extends Resource
                             ->placeholder('External product ID (optional)')
                             ->maxLength(255),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
 
                 Section::make('Packing Information')
                     ->schema([
@@ -106,7 +107,8 @@ class ProductResource extends Resource
                             ->onColor('danger')
                             ->offColor('gray')
                             ->inline(false),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -119,7 +121,7 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('')
+                    ->label('Image')
                     ->disk('public')
                     ->square()
                     ->size(56)

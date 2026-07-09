@@ -135,7 +135,8 @@ class OrderResource extends Resource
                             ->required()
                             ->disabledOn('create'),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                     ->columnSpanFull(),
 
                 Section::make('Customer Information')
                     ->schema([
@@ -165,7 +166,8 @@ class OrderResource extends Resource
                             ->imagePreviewHeight('120')
                             ->maxSize(5120),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                     ->columnSpanFull(),
 
 
                 Section::make('Order Items')
@@ -228,7 +230,8 @@ class OrderResource extends Resource
                             ->columns(2)
                             ->columnSpanFull()
                             ->defaultItems(1),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -419,7 +422,8 @@ class OrderResource extends Resource
                             ->formatStateUsing(fn (string $state): string => Order::statuses()[$state] ?? $state)
                             ->color(fn (string $state): string => static::statusColor($state)),
                     ])
-                    ->columns(4),
+                    ->columns(4)
+                    ->columnSpanFull(),
 
                 Section::make('Customer')
                     ->schema([
@@ -441,12 +445,21 @@ class OrderResource extends Resource
                             ->dateTime('d M Y, H:i')
                             ->placeholder('Not set'),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
 
                 Section::make('Order Items')
                     ->schema([
                         RepeatableEntry::make('items')
                             ->schema([
+                                ImageEntry::make('product.image')
+                                    ->label('Image')
+                                    ->disk('public')
+                                    ->height(50)
+                                    ->square()
+                                    ->placeholder('No image')
+                                    ->url(fn ($record): ?string => $record->product?->image ? asset('storage/' . $record->product->image) : null)
+                                    ->openUrlInNewTab(),
                                 TextEntry::make('product_name')
                                     ->label('Product Name')
                                     ->weight(FontWeight::Medium),
@@ -467,9 +480,10 @@ class OrderResource extends Resource
                                     ->placeholder('—')
                                     ->columnSpanFull(),
                             ])
-                            ->columns(5)
+                            ->columns(6)
                             ->columnSpanFull(),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
 
                 Section::make('Shipping Label')
                     ->schema([
@@ -477,10 +491,39 @@ class OrderResource extends Resource
                             ->label('')
                             ->disk('public')
                             ->height(200)
-                            ->placeholder('No label uploaded'),
+                            ->placeholder('No label uploaded')
+                            ->url(fn ($record): ?string => $record->shipping_label ? asset('storage/' . $record->shipping_label) : null)
+                            ->openUrlInNewTab(),
                     ])
                     ->collapsed()
-                    ->collapsible(),
+                    ->collapsible()
+                    ->columnSpanFull(),
+
+                Section::make('Packing Photos')
+                    ->schema([
+                        RepeatableEntry::make('photos')
+                            ->label('')
+                            ->schema([
+                                ImageEntry::make('photo_path')
+                                    ->label('')
+                                    ->disk('public')
+                                    ->height(200)
+                                    ->placeholder('No photo uploaded')
+                                    ->url(fn ($record): ?string => $record->photo_path ? asset('storage/' . $record->photo_path) : null)
+                                    ->openUrlInNewTab(),
+                                TextEntry::make('uploader.name')
+                                    ->label('Uploaded By')
+                                    ->placeholder('—'),
+                                TextEntry::make('note')
+                                    ->label('Note')
+                                    ->placeholder('—'),
+                            ])
+                            ->columns(3)
+                            ->grid(2)
+                            ->placeholder('No packing photos uploaded yet for this order.'),
+                    ])
+                    ->collapsible()
+                    ->columnSpanFull(),
 
                 Section::make('Assignment & Timestamps')
                     ->schema([
@@ -512,7 +555,8 @@ class OrderResource extends Resource
                             ->dateTime('d M Y, H:i')
                             ->placeholder('—'),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
             ]);
     }
 

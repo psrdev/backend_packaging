@@ -33,6 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('Awadh Crafts')
+            // ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('8rem')
             ->colors([
                 'primary' => Color::Indigo,
                 'danger'  => Color::Rose,
